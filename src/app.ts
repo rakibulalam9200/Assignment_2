@@ -1,15 +1,19 @@
 import cors from 'cors';
 import express, { Application, Request, Response } from 'express';
+import { UserRoutes } from './app/modules/user/user.route';
 const app: Application = express();
 
 // parser
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req: Request, res: Response) => {
-  const a = 10;
+//application routes
+app.use('/api',UserRoutes)
 
-  res.send(a);
+app.get('/', (req: Request, res: Response) => {
+  // const a = 10;
+
+  res.send('........Assalamualicum....');
 });
 
 export default app;

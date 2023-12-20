@@ -22,18 +22,22 @@ const getSigleUserFromDB = async (userId: number) => {
 };
 
 const deleteUserFromDB = async (userId: number) => {
-  const result = await User.updateOne({ userId }, { isDeleted: true });
-  return result;
+  if (await User.isUserExists(userId)) {
+    const result = await User.updateOne({ userId }, { isDeleted: true });
+    return result;
+  } else {
+    throw new Error('User Not Found!');
+  }
 };
 
 const updateUserFromDB = async (userId: number, userData: TUser) => {
-  if (await User.isUserExists(userData.userId)) {
+  if (await User.isUserExists(userId)) {
     const result = await User.updateOne({ userId }, userData, {
       new: true,
     });
     return result;
   } else {
-    throw new Error('User already exists');
+    throw new Error('User Not Found!');
   }
 };
 

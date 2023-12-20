@@ -8,12 +8,13 @@ app.use(express.json());
 app.use(cors());
 
 //application routes
-app.use('/api',UserRoutes)
+app.use('/api/users', UserRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  // const a = 10;
-
-  res.send('........Assalamualicum....');
+  res.status(200).json({
+    success: true,
+    message: 'Welcome to API of Simple Ecommerce',
+  });
 });
 
 export default app;

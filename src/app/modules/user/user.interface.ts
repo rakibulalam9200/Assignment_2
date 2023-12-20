@@ -1,22 +1,22 @@
-export type IAddress = {
+export type TAddress = {
   street: string;
   city: string;
   country: string;
 };
 
-export type IFullName = {
+export type TFullName = {
   firstName: string;
   lastName: string;
 };
 
-export type IUser = {
+export type TUser = {
   userId: number;
   username: string;
   password: string;
-  fullName: IFullName;
+  fullName: TFullName;
   age: number;
   email: string;
   isActive: boolean;
   hobbies: string[];
-  address: IAddress;
+  address: TAddress;
 };

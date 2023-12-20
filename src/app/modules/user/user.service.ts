@@ -15,10 +15,22 @@ const getAllUsersFromDB = async () => {
   return result;
 };
 
-const getSigleUserFromDB = async (userId: number) => {
-  // const result = await User.find({ userId });
-  const result = await User.aggregate([{ $match: { userId: userId } }]);
-  return result;
+const getSingleUserFromDB = async (userId: number) => {
+  if (await User.isUserExists(userId)) {
+    const result = await User.aggregate([{ $match: { userId: userId } }]);
+    return result;
+  } else {
+    throw new Error('User Not Found!');
+  }
+};
+
+const getSingleUserAllOrdersFromDB = async (userId: number) => {
+  if (await User.isUserExists(userId)) {
+    const result = await User.find({ userId }, { orders: 1 });
+    return result;
+  } else {
+    throw new Error('User Not Found!');
+  }
 };
 
 const deleteUserFromDB = async (userId: number) => {
@@ -65,8 +77,9 @@ const updateUserOrder = async (userId: number, productData: TProduct) => {
 export const UserServices = {
   createUserIntoDB,
   getAllUsersFromDB,
-  getSigleUserFromDB,
+  getSigleUserFromDB: getSingleUserFromDB,
   deleteUserFromDB,
   updateUserFromDB,
   updateUserOrder,
+  getSingleUserAllOrdersFromDB,
 };

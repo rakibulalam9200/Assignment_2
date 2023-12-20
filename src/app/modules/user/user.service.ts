@@ -74,6 +74,30 @@ const updateUserOrder = async (userId: number, productData: TProduct) => {
   }
 };
 
+const getSingleUserAllOrdersTotalPriceFromDB = async (userId: number) => {
+  if (await User.isUserExists(userId)) {
+    const result = await User.aggregate([
+      { $match: { userId: userId } },
+      {
+        $unwind: '$orders',
+      },
+
+      {
+        $group: {
+          _id: '$Orders',
+          totalPrice: {
+            $sum: { $multiply: ['$orders.quantity', '$orders.price'] },
+          },
+          // count: { $sum: 1 },
+        },
+      },
+    ]);
+    return result;
+  } else {
+    throw new Error('User Not Found!');
+  }
+};
+
 export const UserServices = {
   createUserIntoDB,
   getAllUsersFromDB,
@@ -82,4 +106,5 @@ export const UserServices = {
   updateUserFromDB,
   updateUserOrder,
   getSingleUserAllOrdersFromDB,
+  getSingleUserAllOrdersTotalPriceFromDB,
 };

@@ -1,4 +1,4 @@
-import { TUser } from './user.interface';
+import { TProduct, TUser } from './user.interface';
 import { User } from './user.model';
 
 const createUserIntoDB = async (userData: TUser) => {
@@ -42,10 +42,31 @@ const updateUserFromDB = async (userId: number, userData: TUser) => {
   }
 };
 
+const updateUserOrder = async (userId: number, productData: TProduct) => {
+  if (await User.isUserExists(userId)) {
+    const result = await User.updateOne(
+      { userId },
+      {
+        $push: {
+          orders: productData,
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+    return result;
+  } else {
+    throw new Error('User Not Found!');
+  }
+};
+
 export const UserServices = {
   createUserIntoDB,
   getAllUsersFromDB,
   getSigleUserFromDB,
   deleteUserFromDB,
   updateUserFromDB,
+  updateUserOrder,
 };

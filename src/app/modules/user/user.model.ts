@@ -1,7 +1,13 @@
 import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import config from '../../config';
-import { TAddress, TFullName, TUser, UserModel } from './user.interface';
+import {
+  TAddress,
+  TFullName,
+  TProduct,
+  TUser,
+  UserModel,
+} from './user.interface';
 
 const fullNameSchema = new Schema<TFullName>({
   firstName: {
@@ -33,6 +39,18 @@ const addressSchema = new Schema<TAddress>({
     type: String,
     required: [true, 'Country is required.'],
     maxlength: [100, 'Country can not be more than 100 characters'],
+  },
+});
+
+const productSchema = new Schema<TProduct>({
+  productName: {
+    type: String,
+  },
+  price: {
+    type: Number,
+  },
+  quantity: {
+    type: Number,
   },
 });
 
@@ -77,6 +95,7 @@ const userSchema = new Schema<TUser, UserModel>({
     type: Boolean,
     default: false,
   },
+  orders: { type: [productSchema], default: [] },
 });
 
 // hasing password before save // pre save middleware hook

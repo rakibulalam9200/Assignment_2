@@ -117,10 +117,34 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+const createOrderForUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const orderData = req.body;
+    await UserServices.updateUserOrder(Number(userId), orderData);
+
+    res.status(200).json({
+      success: true,
+      message: 'Order created successfully.',
+      data: null,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error?.message || 'Something went wrong!',
+      erorr: {
+        code: '500',
+        description: error?.issues || error?.message,
+      },
+    });
+  }
+};
+
 export const UserController = {
   createUser,
   getAllUsers,
   getSingleUser,
   deleteUser,
   updateSingleUser,
+  createOrderForUser,
 };

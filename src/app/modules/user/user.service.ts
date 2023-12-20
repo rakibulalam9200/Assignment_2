@@ -34,6 +34,7 @@ const updateUserFromDB = async (userId: number, userData: TUser) => {
   if (await User.isUserExists(userId)) {
     const result = await User.updateOne({ userId }, userData, {
       new: true,
+      runValidators: true,
     });
     return result;
   } else {

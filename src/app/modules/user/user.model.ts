@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { TAddress, TFullName, TUser } from './user.interface';
+import { TAddress, TFullName, TUser, UserModel } from './user.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const fullNameSchema = new Schema<TFullName>({
   firstName: {
@@ -34,7 +36,7 @@ const addressSchema = new Schema<TAddress>({
   },
 });
 
-const userSchema = new Schema<TUser>({
+const userSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
     required: [true, 'User Id is required.'],
@@ -46,7 +48,11 @@ const userSchema = new Schema<TUser>({
     trim: true,
     unique: true,
   },
-  password: { type: String, required: [true, 'Password is required.'] },
+  password: {
+    type: String,
+    required: [true, 'Password is required.'],
+    maxlength: [30, 'Password can not be more than 30 characters'],
+  },
   fullName: {
     type: fullNameSchema,
     required: true,
@@ -69,4 +75,20 @@ const userSchema = new Schema<TUser>({
   },
 });
 
-export const User = model<TUser>('User', userSchema);
+// hasing password before save // pre save middleware hook
+userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrpt_salt_rounds),
+  );
+  next()
+});
+
+userSchema.statics.isUserExists = async function (userId: number) {
+  const existingUser = await User.findOne({ userId });
+  return existingUser;
+};
+
+export const User = model<TUser, UserModel>('User', userSchema);

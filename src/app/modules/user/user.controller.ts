@@ -20,7 +20,10 @@ const createUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error?.message || 'Something went wrong!',
-      erorr: error?.issues,
+      erorr: {
+        code: '500',
+        description: error?.issues || error?.message,
+      },
     });
   }
 };

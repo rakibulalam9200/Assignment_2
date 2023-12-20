@@ -11,7 +11,7 @@ const createUser = async (req: Request, res: Response) => {
 
     const result = await UserServices.createUserIntoDB(zodParseData);
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: 'User is created successfully',
       data: result,
@@ -37,7 +37,7 @@ const getAllUsers = async (req: Request, res: Response) => {
       message: 'Users are retrived successfully',
       data: result,
     });
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
       message: error?.message || 'Something went wrong!',
@@ -59,7 +59,38 @@ const getSingleUser = async (req: Request, res: Response) => {
       message: 'User is retrived successfully',
       data: result,
     });
-  } catch (error:any) {
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error?.message || 'Something went wrong!',
+      erorr: {
+        code: '500',
+        description: error?.issues || error?.message,
+      },
+    });
+  }
+};
+
+const updateSingleUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const updatedData  = req.body;
+
+    console.log(userId,updatedData)
+
+    const result = await UserServices.updateUserFromDB(
+      userId,
+      updatedData,
+    );
+
+    console.log(result)
+
+    res.status(200).json({
+      success: true,
+      message: 'User is updated successfully',
+      data: result,
+    });
+  } catch (error: any) {
     res.status(500).json({
       success: false,
       message: error?.message || 'Something went wrong!',
@@ -81,7 +112,7 @@ const deleteUser = async (req: Request, res: Response) => {
       message: 'User is deleted successfully',
       data: null,
     });
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
       message: error?.message || 'Something went wrong!',
@@ -97,5 +128,6 @@ export const UserController = {
   createUser,
   getAllUsers,
   getSingleUser,
-  deleteUser
+  deleteUser,
+  updateSingleUser,
 };

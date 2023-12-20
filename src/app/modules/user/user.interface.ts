@@ -11,6 +11,13 @@ export type TFullName = {
   lastName: string;
 };
 
+export type TProduct = {
+  productName: string;
+  price: number;
+  quantity: number;
+};
+
+
 export type TUser = {
   userId: number;
   username: string;
@@ -22,7 +29,9 @@ export type TUser = {
   hobbies: string[];
   address: TAddress;
   isDeleted: boolean;
+  orders?:TProduct[];
 };
+
 
 export interface UserModel extends Model<TUser> {
   isUserExists(userId: number): Promise<TUser | null>;

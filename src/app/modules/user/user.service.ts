@@ -26,18 +26,15 @@ const deleteUserFromDB = async (userId: number) => {
   return result;
 };
 
-const updateUserFromDB = async (userId: string, userData: TUser) => {
-
-    const result = await User.updateOne(
-      { userId: userId },
-      { $set: { userData } },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
-    console.log(result, 'result....');
+const updateUserFromDB = async (userId: number, userData: TUser) => {
+  if (await User.isUserExists(userData.userId)) {
+    const result = await User.updateOne({ userId }, userData, {
+      new: true,
+    });
     return result;
+  } else {
+    throw new Error('User already exists');
+  }
 };
 
 export const UserServices = {

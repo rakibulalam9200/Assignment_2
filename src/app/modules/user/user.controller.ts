@@ -74,16 +74,12 @@ const getSingleUser = async (req: Request, res: Response) => {
 const updateSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const updatedData  = req.body;
-
-    console.log(userId,updatedData)
+    const { user: userData } = req.body;
 
     const result = await UserServices.updateUserFromDB(
-      userId,
-      updatedData,
+      Number(userId),
+      userData,
     );
-
-    console.log(result)
 
     res.status(200).json({
       success: true,
@@ -101,7 +97,6 @@ const updateSingleUser = async (req: Request, res: Response) => {
     });
   }
 };
-
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;

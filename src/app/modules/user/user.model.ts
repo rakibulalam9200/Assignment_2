@@ -1,7 +1,7 @@
-import { Schema, model } from 'mongoose';
-import { TAddress, TFullName, TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
+import { Schema, model } from 'mongoose';
 import config from '../../config';
+import { TAddress, TFullName, TUser, UserModel } from './user.interface';
 
 const fullNameSchema = new Schema<TFullName>({
   firstName: {
@@ -73,6 +73,10 @@ const userSchema = new Schema<TUser, UserModel>({
     type: addressSchema,
     required: true,
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // hasing password before save // pre save middleware hook
@@ -83,7 +87,29 @@ userSchema.pre('save', async function (next) {
     user.password,
     Number(config.bcrpt_salt_rounds),
   );
-  next()
+  next();
+});
+
+userSchema.post('save', async function (doc, next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  doc.password = '';
+  next();
+});
+
+// find data which are not deleted // Query middleware
+userSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+userSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+userSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
 });
 
 userSchema.statics.isUserExists = async function (userId: number) {

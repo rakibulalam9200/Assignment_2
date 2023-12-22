@@ -7,6 +7,7 @@ router.post('/', UserController.createUser);
 router.get('/', UserController.getAllUsers);
 router.get('/:userId', UserController.getSingleUser);
 router.delete('/:userId', UserController.deleteUser);
+router.put('/:userId', UserController.updateSingleUser);
 router.put('/:userId/orders', UserController.createOrderForUser);
 router.get('/:userId/orders', UserController.getAllOrdersForUser);
 router.get(

@@ -5,7 +5,7 @@ import userValidationSchema from './user.validation';
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { user: userData } = req.body;
+    const userData = req.body;
     // data validation using zod
     const zodParseData = userValidationSchema.parse(userData);
 
@@ -98,7 +98,7 @@ const getAllOrdersForUser = async (req: Request, res: Response) => {
 const updateSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { user: userData } = req.body;
+    const userData = req.body;
 
     await UserServices.updateUserFromDB(Number(userId), userData);
 
